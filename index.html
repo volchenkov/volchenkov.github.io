@@ -32,12 +32,21 @@
     .direction-down:after {
       content: "\2193";
     }
-
     #keys {
-      height: 10rem;
-      width: 35%;
       margin: 0 auto;
       font-size: 0;
+    }
+    @media only screen and (min-width:960px) {
+      #keys {
+        height: 10rem;
+        width: 35%;
+      }
+    }
+    @media only screen and (min-width:480px) {
+      #keys {
+        height: 17rem;
+        width: 90%;
+      }
     }
     #keys .key {
       width: calc(14% - 2px);
