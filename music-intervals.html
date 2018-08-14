@@ -1,0 +1,282 @@
+<html>
+<head>
+  <title>Daily music exercises</title>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <style type="text/css">
+    /* https://colorscheme.ru/#2R61T--GruDwV */
+    * {
+      padding: 0;
+      margin: 0;
+      font-family: sans-serif;
+      color: #111;
+    }
+    body {
+      background: #68D6E0;
+    }
+    #quest {
+      text-align: center;
+      height: 20rem;
+      background: #00AFBF;
+      font-size: 10rem;
+      line-height: 20rem;
+    }
+    #quest.correct {
+      background: #3DED53;
+    }
+    #quest.incorrect {
+      background: #FF4B42;
+    }
+    .direction-up:after {
+      content: "\2191";
+    }
+    .direction-down:after {
+      content: "\2193";
+    }
+    #keys {
+      margin: 0 auto;
+      font-size: 0;
+    }
+    @media only screen and (min-width:960px) {
+      #keys {
+        height: 10rem;
+        width: 35%;
+      }
+    }
+    @media only screen and (min-width:480px) {
+      #keys {
+        height: 17rem;
+        width: 90%;
+      }
+    }
+    #keys .key {
+      width: calc(14% - 2px);
+      display: inline-block;
+      border-left: 1px solid #ddd;
+      border-right: 1px solid #ddd;
+      -webkit-box-shadow: inset 0px 0px 80px -6px rgba(0,0,0,0.09);
+      -moz-box-shadow: inset 0px 0px 80px -6px rgba(0,0,0,0.09);
+      box-shadow: inset 0px 0px 80px -6px rgba(0,0,0,0.09);
+      position: relative;
+    }
+    #keys .key:hover {
+      cursor: pointer;
+    }
+
+    #keys .black {
+        position: relative;
+        top: -100%;
+    }
+    #keys .black .key:nth-child(1), #keys .black .key:nth-child(2) {
+      left: calc(14% / 2);
+    }
+    #keys .black .key:nth-child(3), #keys .black .key:nth-child(4), #keys .black .key:nth-child(5) {
+      left: calc(14% * 1.5)
+    }
+    #keys .white .key {
+      height: 100%;
+      background: #fff;
+    }
+    #keys .black .key {
+      height: 55%;
+      background: #111;
+    }
+
+    </style>
+</head>
+<body>
+  <div id="quest">
+  </div>
+
+  <div id="keys">
+    <div class="white">
+      <div data-key="1" class="key"></div>
+      <div data-key="3" class="key"></div>
+      <div data-key="5" class="key"></div>
+      <div data-key="6" class="key"></div>
+      <div data-key="8" class="key"></div>
+      <div data-key="10" class="key"></div>
+      <div data-key="12" class="key"></div>
+    </div>
+
+    <div class="black">
+      <div data-key="2" class="key"></div>
+      <div data-key="4" class="key"></div>
+      <div data-key="7" class="key"></div>
+      <div data-key="9" class="key"></div>
+      <div data-key="11" class="key"></div>
+    </div>
+
+  </div>
+
+  <script type="text/javascript">
+    var notes = [
+          {
+            "names": ['C'],
+            "id": 1
+          },
+          {
+            "names": ['C#', 'Db'],
+            "id": 2
+          },
+          {
+            "names": ['D'],
+            "id": 3
+          },
+          {
+            "names": ['D#', 'Eb'],
+            "id": 4
+          },
+          {
+            "names": ['E'],
+            "id": 5
+          },
+          {
+            "names": ['F'],
+            "id": 6
+          },
+          {
+            "names": ['F#', 'Gb'],
+            "id": 7
+          },
+          {
+            "names": ['G'],
+            "id": 8
+          },
+          {
+            "names": ['G#', 'Ab'],
+            "id": 9
+          },
+          {
+            "names": ['A'],
+            "id": 10
+          },
+          {
+            "names": ['A#', 'Bb'],
+            "id": 11
+          },
+          {
+            "names": ['B'],
+            "id": 12
+          }
+        ],
+        directions = [-1, 1],
+        intervals = [
+          {
+            "semitones": 1,
+            "alias": "m2"
+          },
+          {
+            "semitones": 2,
+            "alias": "M2"
+          },
+          {
+            "semitones": 3,
+            "alias": "m3"
+          },
+          {
+            "semitones": 4,
+            "alias": "M3"
+          },
+          {
+            "semitones": 5,
+            "alias": "P4"
+          },
+          {
+            "semitones": 6,
+            "alias": "TT"
+          },
+          {
+            "semitones": 7,
+            "alias": "P5"
+          },
+          {
+            "semitones": 8,
+            "alias": "m6"
+          },
+          {
+            "semitones": 9,
+            "alias": "M6"
+          },
+          {
+            "semitones": 10,
+            "alias": "m7"
+          },
+          {
+            "semitones": 11,
+            "alias": "M7"
+          }
+        ];
+  </script>
+
+  <script type="text/javascript">
+      var randomElem = function(list) {
+        return list[Math.floor(Math.random() * list.length)]
+      }
+
+      var generateQuest = function() {
+
+        var getStartNote = function() {
+          var i = Math.floor(Math.random() * notes.length);
+          return {
+            "index": i,
+            "name": randomElem(notes[i].names)
+          }
+        }
+
+        return {
+          "start": getStartNote(),
+          "dir": randomElem(directions),
+          "distance": randomElem(intervals)
+        };
+      }
+
+      var calcAnswer = function(quest) {
+        var prima = notes[quest.start.index],
+            lower = notes.slice(0, quest.start.index),
+            higher = notes.slice(quest.start.index + 1)
+            scale = higher.concat(lower).concat(prima).concat(higher).concat(lower);
+
+        return scale[11 + (quest.distance.semitones * quest.dir)];
+      }
+
+      function drawState(quest, attempt) {
+        $('#quest')
+          .removeClass("correct incorrect")
+          .html(`
+            ${quest.start.name}
+            <span style="color: #fff">${quest.dir === 1 ? '&#8593;' : '&#8595;'}</span>
+             ${quest.distance.alias}
+             =
+             <span id="attempt">${attempt ? attempt.note.names[0] : '?'}</span>
+          `);
+
+        if (attempt) {
+          $('#quest').addClass(attempt.isCorrect ? 'correct' : 'incorrect')
+        }
+
+      }
+
+      $(function() {
+        var currentQuest = generateQuest();
+
+        drawState(currentQuest);
+
+        $('#keys .key').click(function() {
+          var attemptNote = notes[$(this).data('key')-1],
+              answer = calcAnswer(currentQuest);
+
+          drawState(currentQuest, {
+            "note": attemptNote,
+            "isCorrect": attemptNote.id === answer.id
+          });
+        });
+
+        $('#quest').click(function() {
+          currentQuest = generateQuest();
+          drawState(currentQuest);
+        });
+      });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,274 @@
+<html>
+<head>
+	<style type="text/css">
+
+	/* https://colorscheme.ru/#0X41T--GruDwV */
+	* {
+		margin: 0;
+		padding: 0;
+	}
+
+	body {
+		background: linear-gradient(45deg, #EECFBA, #C5DDE8);
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		height: 100%;
+	}
+
+	#gamebox {
+		margin: 0 auto;
+		display: grid;
+	}
+
+	.grid-item {
+		width: 38px;
+		height: 38px;
+		border: 1px solid #eee;
+		background-color: #ccc;
+	}
+	.tile {
+		
+	}
+	.grid-item-active {
+		background-color: #fff;
+	}
+
+	.grid-item-moveable:hover {
+		border-color: #000;
+		cursor: pointer;
+	}
+
+	.clickable {
+		cursor: pointer;
+	}
+
+	#scoreboard {
+		font-size: 1.3em;
+		color: #222;
+		padding: 0.5em 0.2em;
+		font-family: Roboto, sans-serif;
+	}
+
+	</style>
+
+</head>	
+<body>
+	<div id="gamebox"></div>
+
+	<script type="text/javascript">
+		let scores = 0
+		let level = 1
+
+		const SCORE_PER_TILE = 5
+
+		function Gamebox(size, boxId) {
+			let cells = null
+
+			function drawCells(boxId, cells) {
+				let container = document.createElement('div')
+
+				let cellPx = 40
+
+				function drawCell(cell) {
+					let el = document.createElement('div')
+
+					el.classList.add("grid-item")
+					el.dataset.row = cell.row
+					el.dataset.col = cell.col
+
+					el.style.backgroundColor = cell.tile ? cell.tile.color : (cell.trackable ? '#fff' : '#ccc')
+					el.style.position = "absolute"
+					el.style.top = (cell.row * cellPx) + 'px'
+					el.style.left = (cell.col * cellPx) + 'px'
+
+					el.addEventListener("click", cell.onclick);
+					cell.onclick && el.classList.add("clickable")
+
+					cell.tile && el.classList.add("tile")
+
+					container.appendChild(el)
+				}
+
+				let borderedSize = size + 1 + 1
+
+				container.style.gridTemplateColumns = Array(borderedSize).fill(100 / borderedSize + "%").join(" ")
+				container.style.width = cellPx * borderedSize
+				container.style.height = cellPx * borderedSize
+				container.style.position = 'relative'
+				container.style.top = cellPx * (size + 1) / 2
+				container.style.left = cellPx * (size + 1) / 2
+
+				container.innerHTML = ''
+
+				cells.forEach(cell => drawCell(cell))
+
+				let box = document.getElementById(boxId)
+				box.innerHTML = ''
+				box.appendChild(container)
+
+				let scoreboard = document.createElement('div')
+				scoreboard.id = 'scoreboard'
+				scoreboard.innerHTML = `Счет: <b>${scores}</b> Уровень: <b>${level}</b>`
+				box.appendChild(scoreboard)
+			}
+
+			function createTile() {
+				let colors = [
+					"#A88EF9",
+					"#003DC9",
+					"#FFD300",
+					"#FFAA00",
+					"#A4BFFF"
+				]
+
+				return {
+					"color": colors[Math.floor(Math.random() * colors.length)]
+				}		
+			}
+
+			document.addEventListener("cellschanged", function(event) {
+				cells = trackCells(cells)
+				drawCells(boxId, cells)
+
+				let fieldCells = [...cells.values()].filter(cell => !cell.isBorder && cell.tile)
+				
+				// игра закончена?
+				if (fieldCells.length == size * size) {
+					document.getElementById(boxId).innerHTML = 'Game over'
+				}
+
+				// уровень закончен?
+				if (fieldCells.length == 0) {
+					cells = trackCells(createGame(size))
+					level++
+					drawCells(boxId, cells)
+				}
+			});
+
+			function onBorderCellClick(event) {
+ 				let col = parseInt(event.target.dataset.col)
+ 				let row = parseInt(event.target.dataset.row)
+
+ 				let tileCol = col
+ 				let tileRow = row
+
+ 				// переместим tile, если это необходимо
+ 				// влево - нужен столбец, строка остается
+ 				if (col == (size + 1) / 2) {
+ 					tileCol = Math.max(...[...cells.values()].filter(cell => !cell.isBorder && cell.tile && cell.row == row).map(cell => cell.col)) + 1
+ 				}
+
+ 				// вправо - нужен столбец, строка остается
+ 				if (col == (size + 1) / -2) {
+ 					tileCol = Math.min(...[...cells.values()].filter(cell => !cell.isBorder && cell.tile && cell.row == row).map(cell => cell.col)) - 1
+ 				}
+
+ 				// вверх - нужна новая строка, столбец на месте
+ 				if (row == (size + 1) / 2) {
+ 					tileRow = Math.max(...[...cells.values()].filter(cell => !cell.isBorder && cell.tile && cell.col == col).map(cell => cell.row)) + 1
+ 				}
+
+ 				// вниз - нужна новая строка, столбец на месте
+ 				if (row == (size + 1) / -2) {
+ 					tileRow = Math.min(...[...cells.values()].filter(cell => !cell.isBorder && cell.tile && cell.col == col).map(cell => cell.row)) - 1
+ 				}
+
+ 				// соседняя ячейка уже занята
+ 				if (Math.abs(tileRow) > size / 2 || Math.abs(tileCol) > size / 2) {
+ 					return
+ 				}
+
+				cells.get(tileCol+':'+ tileRow).tile = cells.get(col+':'+row).tile
+				cells.get(col+':'+row).tile = createTile()
+
+
+				// проверим, нужно ли удалить одноцветные элементы и засчитать очки
+				let neighbourKeys = [
+					[tileCol-1, tileRow],
+					[tileCol+1, tileRow],
+					[tileCol, tileRow+1],
+					[tileCol, tileRow-1]
+				]
+
+				let tileColor = cells.get([tileCol, tileRow].join(':')).tile.color
+				let stepScores = 0
+				neighbourKeys.forEach(function(key) {
+					let cell = cells.get(key.join(':'))
+
+					// если цвета совпадают, засчитываем очки и удаяем элементы
+					if (cell.tile && !cell.isBorder && cell.tile.color == tileColor) {
+						cell.tile = null
+						cells.get(tileCol+':'+ tileRow).tile = null
+						
+						stepScores += SCORE_PER_TILE
+					}
+				})
+				
+				scores += stepScores
+				document.dispatchEvent(new CustomEvent("cellschanged"));
+			}
+
+			function trackCells(cells) {
+				let fieldTiles = [... cells.values()].filter(cell => !cell.isBorder && cell.tile)
+
+				let cols = new Set(fieldTiles.map(cell => cell.col))
+				let rows = new Set(fieldTiles.map(cell => cell.row))
+
+				cells.forEach(cell => cell.trackable = !cell.isBorder && !cell.tile && (cols.has(cell.col) || rows.has(cell.row)))
+
+		 		return cells	
+			}
+
+			function createGame(size) {
+				let cells = new Map()
+
+				// пустое поле
+				const border = (size + 1) / 2
+				for (let row = -1*border; row <= border; row++) {
+					for (let col = -1*border; col <= border; col++) {
+						cells.set(col + ':' + row, {
+							"col": col,
+							"row": row,
+							"isBorder": Math.abs(col) >= size / 2 || Math.abs(row) >= size / 2,
+							"trackable": false,
+							"tile": null,
+							"onclick": null
+						})
+					}
+				}
+
+				// кликабельные края
+				for (let i = -1*border + 1; i <= border-1; i++) {
+					let keys = [
+						[i, border],
+						[i, -1*border],
+						[border, i],
+						[-1*border, i]
+					]
+					keys.forEach(function(key) {
+						let cell = cells.get(key.join(':'))
+
+						cell.tile = createTile()
+						cell.onclick = onBorderCellClick
+					})
+				}
+
+				// начальные ячейки в поле
+				cells.get('0:0').tile = createTile()
+				cells.get('-1:-2').tile = createTile()
+
+				return cells
+			}
+
+
+			cells = createGame(size)
+			document.dispatchEvent(new CustomEvent("cellschanged"));
+		}
+
+		let gb = new Gamebox(9, "gamebox")
+
+	</script>
+
+</body>
+</html>
