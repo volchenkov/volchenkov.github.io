@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+	
+	<title>Brevis MIDI trainer</title>
+</head>
+<body>
+	<div class="container">
+		<div class="row my-4">
+			<button type="button" class="btn btn-primary ml-2" onclick="play()">Play</button>
+			<button type="button" class="btn btn-secondary ml-2" onclick="pause()">Pause</button>
+
+			<button type="button" class="btn btn-light ml-5" onclick="changeSpeed(50)">half speed</button>
+			<button type="button" class="btn btn-light ml-2" onclick="changeSpeed(75)">3/4 speed</button>
+			<button type="button" class="btn btn-light ml-2" onclick="changeSpeed(100)">normal speed </button>
+		</div>
+		<div id="tracks"></div>
+
+	</div>
+
+	<script type="text/javascript">
+		let files = [
+			{
+				"voice": "s",
+			 	"path": "mp3/words/s.mp3"
+			},			
+			{
+				"voice": "a",
+			 	"path": "mp3/words/a.mp3"
+			},			
+			{
+				"voice": "t1",
+			 	"path": "mp3/words/t1.mp3"
+			},
+			{
+				"voice": "t2",
+			 	"path": "mp3/words/t2.mp3"
+			},
+			{
+				"voice": "b",
+			 	"path": "mp3/words/b.mp3"
+			},
+		];
+
+		const container = document.getElementById('tracks');
+
+		files.forEach((file) => {
+			container.innerHTML += `
+				<div>
+					<audio id="audio_${file.voice}" preload>
+						<source src="${file.path}" type="audio/mpeg"></source>
+					</audio>
+					<div class="form-group">
+						<label for="volume_id_${file.voice}">${file.voice}</label>
+			    		<input type="range" class="form-control-range" id="volume_id_${file.voice}" onchange="changeVolume(this)" name="volume_${file.voice}" min="0" max="10" value="10" />
+					</div>
+				</div>
+			`
+		})
+		function play() {
+			files.forEach((file) => document.getElementById(`audio_${file.voice}`).play())
+		}
+		function pause() {
+			files.forEach((file) => document.getElementById(`audio_${file.voice}`).pause())
+		}
+		function changeVolume(input) {
+			document.getElementById(`audio_${input.name.split('_')[1]}`).volume = input.value / 10;
+		}
+		function changeSpeed(factor) {
+			files.forEach((file) => document.getElementById(`audio_${file.voice}`).playbackRate = factor / 100)
+		}
+	</script>
+</body>
+</html>

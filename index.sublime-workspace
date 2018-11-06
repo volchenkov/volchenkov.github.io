@@ -1,0 +1,756 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"font",
+				"font-size"
+			],
+			[
+				"background-c",
+				"background-color"
+			],
+			[
+				"req",
+				"request"
+			],
+			[
+				"publi",
+				"publish_year"
+			],
+			[
+				"ti",
+				"title"
+			],
+			[
+				"create",
+				"createGame"
+			],
+			[
+				"crea",
+				"createGame"
+			],
+			[
+				"sc",
+				"scores"
+			],
+			[
+				"add",
+				"addedScores"
+			],
+			[
+				"ad",
+				"addedScores"
+			],
+			[
+				"key",
+				"key"
+			],
+			[
+				"tile",
+				"tileRow"
+			],
+			[
+				"new",
+				"newCells"
+			],
+			[
+				"cell",
+				"cells"
+			],
+			[
+				"f",
+				"fieldTiles"
+			],
+			[
+				"in",
+				"innerHTML"
+			],
+			[
+				"d",
+				"direction"
+			],
+			[
+				"tra",
+				"track"
+			],
+			[
+				"draw",
+				"draw"
+			],
+			[
+				"t",
+				"true"
+			],
+			[
+				"pro",
+				"props"
+			],
+			[
+				"all",
+				"allLyrics"
+			],
+			[
+				"track",
+				"trackCells"
+			],
+			[
+				"co",
+				"cols"
+			],
+			[
+				"for",
+				"forEach"
+			],
+			[
+				"fo",
+				"forEach"
+			],
+			[
+				"a",
+				"active"
+			],
+			[
+				"com",
+				"columns"
+			],
+			[
+				"rand",
+				"randomColor"
+			],
+			[
+				"row",
+				"rowsCellsCount"
+			],
+			[
+				"spli",
+				"splitted"
+			],
+			[
+				"make",
+				"makeCells"
+			],
+			[
+				"ge",
+				"generateCell"
+			],
+			[
+				"pos",
+				"position"
+			],
+			[
+				"max",
+				"maxRows"
+			],
+			[
+				"dele",
+				"delete"
+			],
+			[
+				"get",
+				"getItem"
+			],
+			[
+				"item",
+				"item"
+			],
+			[
+				"getM",
+				"getMinAvailableCol"
+			],
+			[
+				"itme",
+				"items"
+			],
+			[
+				"fun",
+				"function"
+			],
+			[
+				"las",
+				"lastCol"
+			],
+			[
+				"col",
+				"col"
+			],
+			[
+				"flo",
+				"floesPositions"
+			],
+			[
+				"elem",
+				"elemClasses"
+			],
+			[
+				"floe",
+				"floe"
+			],
+			[
+				"c",
+				"col"
+			],
+			[
+				"floes",
+				"floes-grid-row"
+			],
+			[
+				"C",
+				"C"
+			],
+			[
+				"xm",
+				"xml_root"
+			],
+			[
+				"ns",
+				"nsmap"
+			],
+			[
+				"re",
+				"requests"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "index.html",
+			"settings":
+			{
+				"buffer_size": 616,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "music-intervals.html",
+			"settings":
+			{
+				"buffer_size": 6482,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "kerling.html",
+			"settings":
+			{
+				"buffer_size": 6740,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "1. cp /home/user/documents/temp/test.file /home/user\n\n2. ls -halt \nЗа сортировку отвечае опция -t. Для обратной сортировки можно добавить r.\nОтсюда: https://superuser.com/questions/147027/how-can-i-sort-the-output-of-ls-by-last-modified-date\n\n3. rpm -ivh package.rpm\nДополнительно: https://www.tecmint.com/20-practical-examples-of-rpm-commands-in-linux/ и https://access.redhat.com/solutions/1189\n\n4. Зависит от того, как автозапуск настроен. Так не могу сказать, надо гуглить, читать.\nНачать стоит с /etc/init.d + rc, cron, systemd\n\n5. cron\n\n6. Например так: find . -name '*abracadabra*'\n\n7. /var/log/ \nПодробнее: https://www.cyberciti.biz/faq/linux-log-files-location-and-how-do-i-view-logs-files/ и https://habr.com/post/332502/\n\n8. lpr, lp \nДумаю, что вопрос о них, но никогда не пользовался, так что ничего конкретного сказать не могу. Лучше погуглить.\n\n9. Например так: sed -i 's/windows/linux/g' test.file\nОтсюда: https://askubuntu.com/questions/20414/find-and-replace-text-within-a-file-using-commands\n\n10. Например так: test -f config.txt && cat config.txt \nМожно еще [ -f config.txt ] && cat config.txt - скобки как синоним test\nОтсюда: https://stackoverflow.com/questions/638975/how-do-i-tell-if-a-regular-file-does-not-exist-in-bash\n\n\n\n\n\n\n\n",
+			"settings":
+			{
+				"buffer_size": 1252,
+				"line_ending": "Windows",
+				"name": "1. cp /home/user/documents/temp/test.file /home/us"
+			}
+		},
+		{
+			"file": "/C/Users/Дмитрий/Documents/projects/tdcloud/css/main.css",
+			"settings":
+			{
+				"buffer_size": 146,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "index.sublime-project",
+			"settings":
+			{
+				"buffer_size": 45,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "git comm",
+		"selected_items":
+		[
+			[
+				"git comm",
+				"Git: Commit"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"git commit",
+				"Git: Quick Commit (current file)"
+			],
+			[
+				"git add",
+				"Git: Add..."
+			],
+			[
+				"git:",
+				"Git: Init"
+			],
+			[
+				"git",
+				"Git: Init"
+			],
+			[
+				"Install pa",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 428.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/C/Users/Дмитрий/Documents/projects/volchenkov.github.io"
+	],
+	"file_history":
+	[
+		"/C/Users/Дмитрий/Documents/projects/tdcloud/index.html",
+		"/C/Users/Дмитрий/Documents/Sheets/Peter Hollens - Shenandoah/sheets.ly",
+		"/C/Users/Дмитрий/Documents/projects/tdcloud/css/vendor/simple-grid.min.css",
+		"/C/WT-NMP/WWW/kerling/kerling.html",
+		"/C/Users/Дмитрий/Documents/projects/volchenkov.github.io/index.html",
+		"/C/Users/Дмитрий/Documents/projects/itmo-job-test/itmo-books/src/Entity/Author.php",
+		"/C/Users/Дмитрий/Documents/projects/itmo-job-test/itmo-books/src/Entity/Book.php",
+		"/C/Users/Дмитрий/Documents/projects/itmo-job-test/itmo-books/src/Form/BookType.php",
+		"/C/Users/Дмитрий/Documents/projects/itmo-job-test/itmo-books/README.md",
+		"/C/Users/Дмитрий/Documents/projects/itmo-job-test/itmo-books/config/routes.yaml",
+		"/C/Users/Дмитрий/Documents/projects/itmo-job-test/itmo-books/config/services.yaml",
+		"/C/Users/Дмитрий/Documents/projects/itmo-job-test/itmo-books/src/Controller/BooksController.php",
+		"/C/Users/Дмитрий/Documents/projects/itmo-job-test/itmo-books/src/Form/AuthorType.php",
+		"/C/Users/Дмитрий/Documents/projects/itmo-job-test/itmo-books/src/Controller/AuthorsController.php",
+		"/C/Users/Дмитрий/Documents/projects/itmo-job-test/itmo-books/templates/authors/index.html.twig",
+		"/C/Users/Дмитрий/Documents/projects/itmo-job-test/itmo-books/templates/authors/form.html.twig",
+		"/C/Users/Дмитрий/Documents/projects/itmo-job-test/itmo-books/src/Repository/BookRepository.php",
+		"/C/Users/Дмитрий/Documents/projects/itmo-job-test/itmo-books/templates/base.html.twig",
+		"/C/Users/Дмитрий/Documents/projects/itmo-job-test/itmo-books/config/packages/twig.yaml",
+		"/C/Users/Дмитрий/Documents/projects/itmo-job-test/itmo-books/.env",
+		"/C/Users/Дмитрий/Documents/projects/itmo-job-test/itmo-books/templates/books/form.html.twig",
+		"/C/Users/Дмитрий/Documents/projects/itmo-job-test/itmo-books/templates/books/index.html.twig",
+		"/C/Users/Дмитрий/Documents/projects/itmo-job-test/itmo-books/config/packages/doctrine.yaml",
+		"/C/Users/Дмитрий/Documents/projects/itmo-job-test/itmo-books/src/Migrations/Version20180812115759.php",
+		"/C/Users/Дмитрий/Documents/projects/itmo-job-test/itmo-books/templates/books/formsubmit.html.twig",
+		"/C/Users/Дмитрий/Documents/projects/itmo-job-test/Dockerfile",
+		"/C/Users/Дмитрий/Google Диск/Книги/Художественная/Джойс/ullis.fb2",
+		"/C/Users/Дмитрий/Documents/projects/zemfira-count/texts/Jim_Beam (Уфа 97) (Вендетта, 2005).txt",
+		"/C/Users/Дмитрий/Documents/projects/zemfira-count/all_lyrics.txt",
+		"/C/Users/Дмитрий/Documents/projects/zemfira-count/grab_lyrics.sh",
+		"/C/Users/Дмитрий/Documents/projects/zemfira-count/grab_lyrics.js",
+		"/C/Users/Дмитрий/Documents/projects/zemfira-count/word_freq_count.py",
+		"/C/Users/Дмитрий/Documents/projects/zemfira-count/r.txt",
+		"/C/Users/Дмитрий/Documents/projects/zemfira-count/analysis.js",
+		"/C/Users/Дмитрий/Desktop/123.log",
+		"/C/Users/Дмитрий/Desktop/1234.log",
+		"/C/Users/Дмитрий/Documents/Ноты/Хор/cranberries_mod/definitions.ly",
+		"/C/Users/Дмитрий/Documents/Ноты/Хор/cranberries_mod/cranberries.ly",
+		"/C/Users/Дмитрий/Documents/Ноты/Хор/cranberries/cranberries.ly",
+		"/C/Users/Дмитрий/go/src/github.com/volchenkov/hello/hello.go",
+		"/C/WT-NMP/WWW/dailymusex/public/index.html",
+		"/C/Users/Дмитрий/Documents/Ноты/Хор/cranberries — копия/cranberries.ly",
+		"/C/Users/Дмитрий/Documents/Ноты/Хор/cranberries — копия/definitions.ly",
+		"/C/Users/Дмитрий/Documents/projects/yandex2ga-uploader/data.csv",
+		"/C/Users/Дмитрий/experiments/max-dimensions-yandex-direct-report/command.txt",
+		"/C/Users/Дмитрий/experiments/max-dimensions-yandex-direct-report/create_table",
+		"/C/Users/Дмитрий/experiments/max-dimensions-yandex-direct-report/request.json",
+		"/C/Users/Дмитрий/Documents/projects/yandex2ga-uploader/main.py"
+	],
+	"find":
+	{
+		"height": 23.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"d",
+			"e ",
+			"e",
+			"b",
+			"a",
+			"\">\n",
+			">\n",
+			".</",
+			"\">\n",
+			"вернись",
+			";\n",
+			"</",
+			" {{",
+			";\n",
+			"border",
+			")\n",
+			"row",
+			"{} ",
+			"gridId",
+			"borderedSize",
+			"border",
+			"randomColor",
+			"isColActive",
+			"()\n",
+			"row",
+			"],\n",
+			"addItem",
+			"getRCol",
+			"getLCol",
+			"getMaxAvailableRow",
+			"getMinAvailableRow",
+			"getURow",
+			"getMinAvailableCol",
+			"getMaxAvailableCol",
+			"getRCol",
+			"getMaxAvailableCol",
+			"getMinAvailableCol",
+			")\n",
+			"width",
+			"gridTemplateColumns",
+			";\n",
+			"440px",
+			"classes",
+			"itemClasses",
+			"MAX_COLUMNS",
+			"classList",
+			"add",
+			";\n",
+			"%;\n",
+			"...\")",
+			"choirPart",
+			"с",
+			"\"},",
+			"\"},\n",
+			"id",
+			",",
+			",\n",
+			")\n",
+			"userId",
+			"true",
+			"\""
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"des ",
+			"ees ",
+			"ees",
+			"bes",
+			"aes",
+			"rndColor",
+			"getRightCol",
+			"getLeftCol",
+			"getDownRow",
+			"getUpRow",
+			"getLCol",
+			"getRCol",
+			"itemClasses",
+			"maxColumns",
+			"', '",
+			""
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 3,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "index.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 616,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								97,
+								97
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "music-intervals.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6482,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4385,
+								4385
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "kerling.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6740,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								808,
+								808
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 150.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1252,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								1252
+							]
+						],
+						"settings":
+						{
+							"auto_name": "1. cp /home/user/documents/temp/test.file /home/us",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "/C/Users/Дмитрий/Documents/projects/tdcloud/css/main.css",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 146,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								85,
+								85
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/CSS/CSS.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "index.sublime-project",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 45,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JSON.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 23.0
+	},
+	"input":
+	{
+		"height": 39.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "index.sublime-project",
+	"replace":
+	{
+		"height": 42.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 50.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
