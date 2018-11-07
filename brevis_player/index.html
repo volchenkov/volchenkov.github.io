@@ -20,7 +20,13 @@
 			<button type="button" class="btn btn-light ml-2" onclick="changeSpeed(75)">3/4 speed</button>
 			<button type="button" class="btn btn-light ml-2" onclick="changeSpeed(100)">normal speed </button>
 		</div>
-		<div id="tracks"></div>
+
+		<div class="form-group pb-5">
+			<label for="volume_id_all">Chorus</label>
+	    	<input type="range" class="form-control-range" id="volume_id_all" onchange="changeTotalVolume(this)" name="volume_all" min="0" max="10" value="10"/>
+		</div>
+
+		<div id="tracks" class="mt-3"></div>
 
 	</div>
 
@@ -28,23 +34,28 @@
 		let files = [
 			{
 				"voice": "s",
-			 	"path": "mp3/words/s.mp3"
+				"title": "Soprano",
+			 	"path": "mp3/words/s.mp3",
 			},			
 			{
 				"voice": "a",
-			 	"path": "mp3/words/a.mp3"
+				"title": "Alto",
+			 	"path": "mp3/words/a.mp3",
 			},			
 			{
 				"voice": "t1",
-			 	"path": "mp3/words/t1.mp3"
+				"title": "Tenor I",
+			 	"path": "mp3/words/t1.mp3",
 			},
 			{
 				"voice": "t2",
-			 	"path": "mp3/words/t2.mp3"
+				"title": "Tenor II",
+			 	"path": "mp3/words/t2.mp3",
 			},
 			{
 				"voice": "b",
-			 	"path": "mp3/words/b.mp3"
+				"title": "Bass",
+			 	"path": "mp3/words/b.mp3",
 			},
 		];
 
@@ -57,7 +68,7 @@
 						<source src="${file.path}" type="audio/mpeg"></source>
 					</audio>
 					<div class="form-group">
-						<label for="volume_id_${file.voice}">${file.voice}</label>
+						<label for="volume_id_${file.voice}">${file.title}</label>
 			    		<input type="range" class="form-control-range" id="volume_id_${file.voice}" onchange="changeVolume(this)" name="volume_${file.voice}" min="0" max="10" value="10" />
 					</div>
 				</div>
@@ -66,13 +77,19 @@
 		function play() {
 			files.forEach((file) => {
 				let audio = document.getElementById(`audio_${file.voice}`);
-
-				audio.currentTime = 0
-				audio.play()
+				audio.currentTime = 0;
+				audio.play();
 			})
 		}
 		function pause() {
 			files.forEach((file) => document.getElementById(`audio_${file.voice}`).pause())
+		}
+		function changeTotalVolume(input) {
+			files.forEach((file) => {
+				document.getElementById(`volume_id_${file.voice}`).value = input.value
+				document.getElementById(`audio_${file.voice}`).volume = input.value / 10;
+			})
+
 		}
 		function changeVolume(input) {
 			document.getElementById(`audio_${input.name.split('_')[1]}`).volume = input.value / 10;
