@@ -53,7 +53,7 @@
 		files.forEach((file) => {
 			container.innerHTML += `
 				<div>
-					<audio id="audio_${file.voice}" preload>
+					<audio id="audio_${file.voice}" preload loop>
 						<source src="${file.path}" type="audio/mpeg"></source>
 					</audio>
 					<div class="form-group">
