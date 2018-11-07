@@ -12,10 +12,11 @@
 <body>
 	<div class="container">
 		<div class="row my-4">
-			<button type="button" class="btn btn-primary ml-2" onclick="play()">Play</button>
-			<button type="button" class="btn btn-secondary ml-2" onclick="pause()">Pause</button>
-
-			<button type="button" class="btn btn-light ml-5" onclick="changeSpeed(50)">half speed</button>
+			<button type="button" class="btn btn-primary" onclick="play()">Play</button>
+			<button type="button" class="btn btn-secondary ml-2" onclick="pause()">Stop</button>
+		</div>
+		<div class="row my-4">
+			<button type="button" class="btn btn-light" onclick="changeSpeed(50)">half speed</button>
 			<button type="button" class="btn btn-light ml-2" onclick="changeSpeed(75)">3/4 speed</button>
 			<button type="button" class="btn btn-light ml-2" onclick="changeSpeed(100)">normal speed </button>
 		</div>
@@ -63,7 +64,12 @@
 			`
 		})
 		function play() {
-			files.forEach((file) => document.getElementById(`audio_${file.voice}`).play())
+			files.forEach((file) => {
+				let audio = document.getElementById(`audio_${file.voice}`);
+
+				audio.currentTime = 0
+				audio.play()
+			})
 		}
 		function pause() {
 			files.forEach((file) => document.getElementById(`audio_${file.voice}`).pause())
