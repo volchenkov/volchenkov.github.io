@@ -11,8 +11,8 @@
 </head>
 <body>
 	<div class="container">
-		<div class="row my-4">
-			<div class="form-group">
+		<div class="row mt-3">
+			<div class="form-group col-12">
 				<label for="sample_select">Song sample</label>
 				<select class="form-control" id="sample_select" onchange="loadFiles(this.value)">
 				    <option value="words_b74-76" selected>Words (74-76)</option>
@@ -21,19 +21,25 @@
 				</select>
 			</div>
 		</div>
-		<div class="row my-4">
-			<button type="button" class="btn btn-primary" onclick="play()">Play</button>
-			<button type="button" class="btn btn-secondary ml-2" onclick="pause()">Stop</button>
+		<div class="row mt-3">
+			<div class="form-group col-12">
+				<button type="button" class="btn btn-primary" id="play_button" onclick="play()">Play</button>
+				<button type="button" class="btn btn-secondary ml-2" onclick="pause()">Stop</button>
+			</div>
 		</div>
-		<div class="row my-4">
-			<button type="button" class="btn btn-light" onclick="changeSpeed(50)">half speed</button>
-			<button type="button" class="btn btn-light ml-2" onclick="changeSpeed(75)">3/4 speed</button>
-			<button type="button" class="btn btn-light ml-2" onclick="changeSpeed(100)">normal speed </button>
+		<div class="row my-3">
+			<div class="form-group col-12">
+				<button type="button" class="btn btn-light" onclick="changeSpeed(50)">1/2 tempo</button>
+				<button type="button" class="btn btn-light ml-2" onclick="changeSpeed(75)">3/4 tempo</button>
+				<button type="button" class="btn btn-light ml-2" onclick="changeSpeed(100)"> a tempo </button>
+			</div>
 		</div>
+
 		<div class="form-group pb-5">
 			<label for="volume_id_all">Chorus</label>
 	    	<input type="range" class="form-control-range" id="volume_id_all" onchange="changeTotalVolume(this)" name="volume_all" min="0" max="10" value="10"/>
 		</div>
+
 		<div id="tracks" class="mt-3"></div>
 
 	</div>
@@ -75,14 +81,26 @@
 		let filesList;
 
 		function loadFiles(sample) {
+			let playButton = document.getElementById('play_button');
+			playButton.disabled = true;	
+
+			let loaded = voices.length;
+
 			filesList = voices.map(voice => {
 				voice.audio = new Audio(`mp3/${sample}_${voice.voice}.mp3`)
 				voice.audio.preload = true;
 				voice.audio.loop = true;
 				voice.audio.volume = document.getElementById(`volume_id_${voice.voice}`).value / 10
 
+				voice.audio.onloadeddata = function() {
+					loaded -= 1;
+					if (loaded === 0) {
+						playButton.disabled = false;	
+					}
+				};		
 				return voice;
 			})	
+
 		}
 
 		function files(voice) {
