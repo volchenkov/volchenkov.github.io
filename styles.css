@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css?family=Press+Start+2P&display=fallback&subset=cyrillic');
+* {
+  padding: 0;
+  margin: 0;
+}
+body {
+  padding-top: 3em;
+  font-family: 'Press Start 2P';
+}
+
+a {
+  font-size: 1.3em;
+  color: #555;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #9C02A7;
+}
+img {
+  height: 1.3em;
+}
+
+li {
+  margin: 3.5em;
+  list-style-type: none;
+}
+
+.container {
+  width: 70%;
+  margin: 0 auto;
+}
