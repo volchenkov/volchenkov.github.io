@@ -3,9 +3,20 @@
   padding: 0;
   margin: 0;
 }
+@keyframes slideDown {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
 body {
   padding-top: 2em;
   font-family: 'Press Start 2P';
+  animation: 0.3s ease-out 0s 1 slideDown;
 }
 hr {
   margin-top: 2em;
