@@ -13,18 +13,21 @@
     opacity: 1;
   }
 }
+* {
+  font-size: 2rem;
+}
+
 body {
-  padding-top: 2em;
+  padding-top: 2rem;
   font-family: 'Oswald', sans-serif;
 }
 #projects {
   animation: 0.2s ease-out 0s 1 slideDown;
 }
 hr {
-  margin-top: 2em;
+  margin: 2em 0;
 }
 a {
-  font-size: 1.3em;
   color: #222;
   text-decoration: none;
 }
@@ -32,15 +35,14 @@ a:hover {
   color: #9C02A7;
 }
 img {
-  height: 1.3em;
+  height: 2rem;
 }
-
 li {
-  margin: 4em 0;
+  margin-bottom: 3rem;
   list-style-type: none;
 }
 
 .container {
-  width: 70%;
+  width: 80%;
   margin: 0 auto;
 }
