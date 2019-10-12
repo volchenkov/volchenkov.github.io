@@ -16,7 +16,6 @@
 * {
   font-size: 2rem;
 }
-
 body {
   padding-top: 2rem;
   font-family: 'Oswald', sans-serif;
@@ -25,7 +24,7 @@ body {
   animation: 0.2s ease-out 0s 1 slideDown;
 }
 hr {
-  margin: 2em 0;
+  margin: 1.5em 0;
 }
 a {
   color: #222;
@@ -38,10 +37,9 @@ img {
   height: 2rem;
 }
 li {
-  margin-bottom: 3rem;
+  margin-bottom: 1.5em;
   list-style-type: none;
 }
-
 .container {
   width: 80%;
   margin: 0 auto;
