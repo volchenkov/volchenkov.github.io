@@ -1,11 +1,11 @@
-@import url('https://fonts.googleapis.com/css?family=Press+Start+2P&display=fallback&subset=cyrillic');
+@import url('https://fonts.googleapis.com/css?family=Oswald&display=fallback');
 * {
   padding: 0;
   margin: 0;
 }
 @keyframes slideDown {
   0% {
-    transform: translateY(-100%);
+    transform: translateY(-25%);
     opacity: 0;
   }
   100% {
@@ -15,8 +15,10 @@
 }
 body {
   padding-top: 2em;
-  font-family: 'Press Start 2P';
-  animation: 0.3s ease-out 0s 1 slideDown;
+  font-family: 'Oswald', sans-serif;
+}
+#projects {
+  animation: 0.2s ease-out 0s 1 slideDown;
 }
 hr {
   margin-top: 2em;
