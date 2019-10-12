@@ -12,7 +12,7 @@
 		font-weight: lighter;
 	}
 	body {
-		padding-top: 3vh;
+		padding-top: 1vh;
 	} 
 	.box {
 	    display: flex;
@@ -21,21 +21,20 @@
 	}
 	td {
 		text-align: center;
+		vertical-align: top;
 		padding: 1vh 2vw;
-		color: #e0e0e0;
 	}
 	td:first-child {  
 	    text-align: left;
 	    padding: 1vh 0;
-	    color: #000;
+	    padding-right: 2vh;
 	}
 	.sharp, .flat {
-		font-weight: bold;
-		color: #000;
+		background: #eaeaea;
 	}
-	tbody tr:first-child td {
-		text-align: center;
-		font-size: 2.5vw;
+	sup {
+		font-size: 3.5vh;
+		padding-left: 1vh;
 	}
 	</style>
 </head>	
@@ -44,13 +43,8 @@
 	
 	<table>
 		<tbody>
-			<tr>
-				<td colspan="47">
-					Major
-				</td>
-			</tr>
 			<tr class="maj">
-				<td>Ionian</td>
+				<td>Ionian<sup>maj</sup></td>
 				<td>1</td>
 				<td>2</td>
 				<td>3</td>
@@ -60,7 +54,7 @@
 				<td>7</td>
 			</tr>
 			<tr class="maj">
-				<td>Lydian</td>
+				<td>Lydian<sup>maj 4&#9839;</sup></td>
 				<td>1</td>
 				<td>2</td>
 				<td>3</td>
@@ -70,7 +64,7 @@
 				<td>7</td>
 			</tr>
 			<tr class="maj">
-				<td>Mixolydian</td>
+				<td>Mixolydian<sup>maj 7&#9837;</sup></td>
 				<td>1</td>
 				<td>2</td>
 				<td>3</td>
@@ -79,52 +73,45 @@
 				<td>6</td>
 				<td class="flat">7&#9837;</td>
 			</tr>
-		</tbody>
-		<tbody>
-			<tr>
-				<td colspan="47">
-					Minor
-				</td>
-			</tr>
 			<tr class="min">
-				<td>Aeolian</td>
+				<td>Dorian<sup>min 6&#9839;</sup></td>
 				<td>1</td>
 				<td>2</td>
-				<td>3</td>
+				<td>3&#9837;</td>
 				<td>4</td>
 				<td>5</td>
-				<td>6</td>
-				<td>7</td>
+				<td class="sharp">6</td>
+				<td>7&#9837;</td>
 			</tr>
 			<tr class="min">
-				<td>Dorian</td>
+				<td>Aeolian<sup>min</sup></td>
 				<td>1</td>
 				<td>2</td>
-				<td>3</td>
+				<td>3&#9837;</td>
 				<td>4</td>
 				<td>5</td>
-				<td class="sharp">6&#9839;</td>
-				<td>7</td>
+				<td>6&#9837;</td>
+				<td>7&#9837;</td>
 			</tr>
 			<tr class="min">
-				<td>Phrygian</td>
+				<td>Phrygian<sup>min 2&#9837;</sup></td>
 				<td>1</td>
 				<td class="flat">2&#9837;</td>
-				<td>3</td>
+				<td>3&#9837;</td>
 				<td>4</td>
 				<td>5</td>
-				<td>6</td>
-				<td>7</td>
+				<td>6&#9837;</td>
+				<td>7&#9837;</td>
 			</tr>
 			<tr class="min">
-				<td>Locrian</td>
+				<td>Locrian<sup>min 2&#9837;&nbsp;5&#9837;</sup></td>
 				<td>1</td>
 				<td class="flat">2&#9837;</td>
-				<td>3</td>
+				<td>3&#9837;</td>
 				<td>4</td>
 				<td class="flat">5&#9837;</td>
-				<td>6</td>
-				<td>7</td>
+				<td>6&#9837;</td>
+				<td>7&#9837;</td>
 			</tr>
 		</tbody>
 	</table>
