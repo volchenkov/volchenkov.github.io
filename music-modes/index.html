@@ -26,11 +26,16 @@
 	}
 	td:first-child {  
 	    text-align: left;
-	    padding: 1vh 0;
-	    padding-right: 2vh;
 	}
 	.sharp, .flat {
 		background: #eaeaea;
+	}
+	#scales tr:hover {
+		cursor: pointer;
+		background: #f8f8f8;
+	}
+	#scales tr.active td:first-child {
+		text-decoration: underline;
 	}
 	</style>
 	<script src="https://use.fontawesome.com/491e16d960.js"></script>
@@ -44,17 +49,19 @@
 
 	<div class="box">
 	<script>
+		var activateRow = (row) => {
+			document.querySelectorAll("#scales tr").forEach(row => row.classList.remove('active'));
+			row.classList.add('active');
+		}
 		var showPlayer = (melody) => {
 			ABCJS.renderMidi('notation', `X:1\nM: 4/4\nL: 1/4\nK:C\n|:${melody}|\n`);
-
-			return false;
 		}
 	</script>
 
 
-	<table>
+	<table id="scales">
 		<tbody>
-			<tr class="maj" onclick="showPlayer('CDEFGAB2 BAGFEDC')">
+			<tr class="maj" onclick="activateRow(this); showPlayer('CDEFGAB2 BAGFEDC')">
 				<td onclick="">Ionian</td>
 				<td>1</td>
 				<td>2</td>
@@ -64,7 +71,7 @@
 				<td>6</td>
 				<td>7</td>
 			</tr>
-			<tr class="maj" onclick="showPlayer('CDE^FGAB2 BAG^FEDC')">
+			<tr class="maj" onclick="activateRow(this); showPlayer('CDE^FGAB2 BAG^FEDC')">
 				<td>Lydian</td>
 				<td>1</td>
 				<td>2</td>
@@ -74,7 +81,7 @@
 				<td>6</td>
 				<td>7</td>
 			</tr>
-			<tr class="maj" onclick="showPlayer('CDEFGA_B2 _BAGFEDC')">
+			<tr class="maj" onclick="activateRow(this); showPlayer('CDEFGA_B2 _BAGFEDC')">
 				<td>Mixolydian</td>
 				<td>1</td>
 				<td>2</td>
@@ -84,7 +91,7 @@
 				<td>6</td>
 				<td class="flat">7&#9837;</td>
 			</tr>
-			<tr class="min" onclick="showPlayer('CD_EFGA_B2 _BAGF_EDC')">
+			<tr class="min" onclick="activateRow(this); showPlayer('CD_EFGA_B2 _BAGF_EDC')">
 				<td>Dorian</td>
 				<td>1</td>
 				<td>2</td>
@@ -94,7 +101,7 @@
 				<td class="sharp">6</td>
 				<td>7&#9837;</td>
 			</tr>
-			<tr class="min" onclick="showPlayer('CD_EFG_A_B2 _B_AGF_EDC')">
+			<tr class="min" onclick="activateRow(this); showPlayer('CD_EFG_A_B2 _B_AGF_EDC')">
 				<td>Aeolian</td>
 				<td>1</td>
 				<td>2</td>
@@ -104,7 +111,7 @@
 				<td>6&#9837;</td>
 				<td>7&#9837;</td>
 			</tr>
-			<tr class="min" onclick="showPlayer('C_D_EFG_A_B2 _B_AGF_E_DC')">
+			<tr class="min" onclick="activateRow(this); showPlayer('C_D_EFG_A_B2 _B_AGF_E_DC')">
 				<td>Phrygian</td>
 				<td>1</td>
 				<td class="flat">2&#9837;</td>
@@ -114,7 +121,7 @@
 				<td>6&#9837;</td>
 				<td>7&#9837;</td>
 			</tr>
-			<tr class="min" onclick="showPlayer('C_D_EF_G_A_B2 _B_A_GF_E_DC')">
+			<tr class="min" onclick="activateRow(this); showPlayer('C_D_EF_G_A_B2 _B_A_GF_E_DC')">
 				<td>Locrian</td>
 				<td>1</td>
 				<td class="flat">2&#9837;</td>
