@@ -159,6 +159,7 @@ details.con summary{padding:10px 12px;cursor:pointer;font-weight:600}
 (() => {
   const VMIN = -5, VMAX = 10, NOTES = ['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
   const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+  const isAndroid = /Android/i.test(navigator.userAgent);
   const f3 = x => (Math.round(x * 1000) / 1000).toString();
 
   // ---------- state ----------
@@ -341,7 +342,8 @@ details.con summary{padding:10px 12px;cursor:pointer;font-weight:600}
 
   // ---------- transport: WebUSB with a tiny CDC-ACM driver ----------
   async function connectUSB() {
-    const dev = await navigator.usb.requestDevice({ filters: [{ vendorId: 0x0483, productId: 0x5740 }, { vendorId: 0x0483 }] });
+    // Empty filter lists every USB device, so you can tell 'phone sees nothing' from 'crow has another id'
+    const dev = await navigator.usb.requestDevice({ filters: [] });
     await dev.open();
     if (dev.configuration === null) await dev.selectConfiguration(1);
     const ifs = dev.configuration.interfaces;
@@ -391,20 +393,19 @@ details.con summary{padding:10px 12px;cursor:pointer;font-weight:600}
     }
     try {
       status('Choose crow in the dialog…');
-      try { link = hasSerial ? await connectSerial() : await connectUSB(); }
-      catch (e) {
-        // Fall back to WebUSB if Web Serial can't see the USB device on this phone
-        if (hasSerial && hasUSB && e.name !== 'AbortError' && e.name !== 'SecurityError') link = await connectUSB();
-        else if (hasSerial && hasUSB && e.name === 'NotFoundError') link = await connectUSB();
-        else throw e;
-      }
+      // Android Web Serial only lists Bluetooth ports; desktop OS serial drivers stop WebUSB claiming crow
+      const useUSB = hasUSB && (isAndroid || !hasSerial);
+      link = useUSB ? await connectUSB() : await connectSerial();
       status('Connected via ' + link.kind, 'on');
       log('Connected via ' + link.kind);
       OUT.forEach(o => { o.dirtyV = o.dirtySlew = o.dirtyMode = true; });
       send('^^v\n');
     } catch (e) {
       link = null;
-      if (e.name === 'NotFoundError' || e.name === 'AbortError') { status('Not connected'); return; }
+      if (e.name === 'NotFoundError' || e.name === 'AbortError') {
+        notice('No device chosen. If crow wasn’t in the list: use a data cable (many USB-C to micro-USB cables only charge), make sure crow is powered in the rack, turn on OTG in the phone’s settings if it has that switch, and replug. crow should appear as “crow: telephone line” or an STMicroelectronics device.');
+        status('Not connected'); return;
+      }
       if (e.name === 'SecurityError') {
         notice('The browser blocked USB access inside this frame. Open the page in its own Chrome tab (⋮ → Open in Chrome), or host the HTML file on any https address.');
         status('Blocked', 'err'); return;
