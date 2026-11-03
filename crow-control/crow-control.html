@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>crow outs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --panel:#cfd3d0; --well:#e4e6e3; --ink:#1b1f22; --muted:#596166; --line:#a6aca9; --track:#b9beba;
+  --o1:#c99a00; --o2:#1d8db0; --o3:#c43a6c; --o4:#4f9a35; --warn:#b3261e; --ok:#2f7d32;
+  --fd:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --fb:"Barlow",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --panel:#22282b; --well:#181d1f; --ink:#e6e9e7; --muted:#929b9f; --line:#3b4347; --track:#2e3539;
+    --o1:#f0c419; --o2:#3fc0e6; --o3:#f0628f; --o4:#7cc95b; --warn:#ff8a80; --ok:#81c784;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --panel:#22282b; --well:#181d1f; --ink:#e6e9e7; --muted:#929b9f; --line:#3b4347; --track:#2e3539;
+  --o1:#f0c419; --o2:#3fc0e6; --o3:#f0628f; --o4:#7cc95b; --warn:#ff8a80; --ok:#81c784;
+  color-scheme:dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html,body{margin:0;background:var(--panel);color:var(--ink);font-family:var(--fb);font-size:16px;line-height:1.4;-webkit-tap-highlight-color:transparent}
+body{min-height:100%}
+main{max-width:640px;margin:0 auto;padding:12px 14px 28px}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+/* top bar */
+.bar{display:flex;align-items:center;gap:12px;padding:6px 0 14px}
+.mark{font-family:var(--fd);font-weight:700;font-size:2rem;letter-spacing:.01em;line-height:1;margin:0}
+.status{flex:1;min-width:0;font-size:.9rem;color:var(--muted);display:flex;align-items:center;gap:8px}
+.status .led{width:10px;height:10px;border-radius:50%;background:var(--line);flex:none}
+.status.on .led{background:var(--ok);box-shadow:0 0 8px var(--ok)}
+.status.err .led{background:var(--warn)}
+.status span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btn{border:1.5px solid var(--ink);background:transparent;border-radius:999px;padding:8px 16px;font-weight:600;cursor:pointer;min-height:40px}
+.btn.solid{background:var(--ink);color:var(--panel)}
+.btn:disabled{opacity:.4;cursor:default}
+
+.notice{border:1.5px solid var(--warn);color:var(--ink);border-radius:10px;padding:10px 12px;margin:0 0 14px;font-size:.92rem}
+.notice[hidden]{display:none}
+
+/* the four outputs */
+.outs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.out{--c:var(--o1);display:flex;flex-direction:column;align-items:stretch;gap:8px;background:transparent;border:none;padding:0}
+.out[data-n="2"]{--c:var(--o2)} .out[data-n="3"]{--c:var(--o3)} .out[data-n="4"]{--c:var(--o4)}
+.jack{appearance:none;border:none;background:none;padding:4px 0 0;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer}
+.jack .ring{width:34px;height:34px;border-radius:50%;border:5px solid var(--c);background:var(--well);display:grid;place-items:center;font-family:var(--fd);font-weight:700;font-size:1rem;transition:transform .15s}
+.out.sel .jack .ring{background:var(--c);color:var(--panel);transform:scale(1.08)}
+.read{font-family:var(--fd);font-weight:600;font-size:1.35rem;line-height:1;text-align:center;font-variant-numeric:tabular-nums}
+.read small{display:block;font-size:.8rem;font-weight:500;color:var(--muted);margin-top:3px;min-height:1em}
+
+.fader{position:relative;height:min(52vh,420px);min-height:240px;border-radius:12px;background:var(--well);border:1.5px solid var(--line);touch-action:none;cursor:ns-resize;overflow:hidden}
+.fader .zero{position:absolute;left:0;right:0;height:0;border-top:1.5px dashed var(--muted);opacity:.6}
+.fader .fill{position:absolute;left:0;right:0;background:var(--c);opacity:.35}
+.fader .cap{position:absolute;left:6px;right:6px;height:14px;margin-top:-7px;border-radius:5px;background:var(--c);box-shadow:0 1px 0 rgba(0,0,0,.25)}
+.fader .tick{position:absolute;right:4px;font-size:.7rem;color:var(--muted);transform:translateY(-50%);pointer-events:none;font-family:var(--fd)}
+.out.lfo .fader{cursor:default}
+.out.lfo .fader .fill{opacity:.18}
+
+/* detail panel */
+.detail{margin-top:18px;border-top:4px solid var(--c);padding-top:14px;--c:var(--o1)}
+.detail h2{font-family:var(--fd);font-weight:700;font-size:1.6rem;line-height:1;margin:0 0 12px;display:flex;align-items:baseline;gap:10px}
+.detail h2 em{font-style:normal;font-weight:500;font-size:1rem;color:var(--muted)}
+.seg{display:inline-flex;border:1.5px solid var(--ink);border-radius:999px;overflow:hidden;margin-bottom:14px}
+.seg button{border:none;background:transparent;padding:8px 18px;cursor:pointer;font-weight:600;min-height:40px}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--panel)}
+.row{display:grid;grid-template-columns:5.5rem 1fr 4.6rem;align-items:center;gap:10px;margin:10px 0}
+.row label{font-weight:500}
+.row output{font-family:var(--fd);font-weight:600;font-size:1.1rem;text-align:right;font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--c);height:32px}
+.nudge{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.nudge .btn{padding:6px 14px;min-width:48px}
+.vin{width:6.5rem;padding:7px 10px;border-radius:8px;border:1.5px solid var(--line);background:var(--well);font-family:var(--fd);font-size:1.15rem}
+.check{display:flex;align-items:center;gap:8px;margin:12px 0 0;cursor:pointer}
+.check input{width:20px;height:20px;accent-color:var(--c)}
+[hidden]{display:none!important}
+
+.tools{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+
+/* console */
+details.con{margin-top:22px;border:1.5px solid var(--line);border-radius:10px;background:var(--well)}
+details.con summary{padding:10px 12px;cursor:pointer;font-weight:600}
+.log{margin:0;padding:0 12px 10px;max-height:200px;overflow:auto;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.8rem;white-space:pre-wrap;word-break:break-word;color:var(--muted)}
+.log .tx{color:var(--ink)}
+.cmd{display:flex;gap:8px;padding:0 12px 12px}
+.cmd input{flex:1;min-width:0;padding:8px 10px;border-radius:8px;border:1.5px solid var(--line);background:var(--panel);font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.9rem}
+
+@media (max-width:380px){ .outs{gap:6px} .read{font-size:1.15rem} }
+@media (prefers-reduced-motion:reduce){ .jack .ring{transition:none} }
+</style>
+</head>
+<body>
+<main>
+  <div class="bar">
+    <h1 class="mark">crow</h1>
+    <div class="status" id="status"><i class="led"></i><span id="statusText">Not connected</span></div>
+    <button class="btn solid" id="connect">Connect</button>
+  </div>
+
+  <p class="notice" id="notice" hidden></p>
+
+  <section class="outs" id="outs" aria-label="Outputs"></section>
+
+  <section class="detail" id="detail" aria-live="polite">
+    <h2><span id="dTitle">Output 1</span> <em id="dSub">voltage</em></h2>
+    <div class="seg" role="group" aria-label="Mode">
+      <button type="button" data-mode="volts" aria-pressed="true">Voltage</button>
+      <button type="button" data-mode="lfo" aria-pressed="false">LFO</button>
+    </div>
+
+    <div id="voltsPane">
+      <div class="nudge">
+        <button class="btn" id="down" aria-label="Lower">−</button>
+        <input class="vin" id="vin" type="number" inputmode="decimal" step="0.01" min="-5" max="10" aria-label="Volts">
+        <button class="btn" id="up" aria-label="Raise">+</button>
+        <button class="btn" id="zero">0 V</button>
+      </div>
+      <label class="check"><input type="checkbox" id="snap"> Snap to semitones (1/12 V)</label>
+    </div>
+
+    <div id="lfoPane" hidden>
+      <div class="row"><label for="rate">Rate</label><input type="range" id="rate" min="0" max="1000"><output id="rateOut"></output></div>
+      <div class="row"><label for="level">Depth</label><input type="range" id="level" min="0" max="1000"><output id="levelOut"></output></div>
+    </div>
+
+    <div class="row"><label for="slew">Slew</label><input type="range" id="slew" min="0" max="1000"><output id="slewOut"></output></div>
+  </section>
+
+  <div class="tools">
+    <button class="btn" id="allZero">Set all outputs to 0 V</button>
+    <button class="btn" id="disconnect" disabled>Disconnect</button>
+  </div>
+
+  <details class="con">
+    <summary>Console</summary>
+    <pre class="log" id="log"></pre>
+    <form class="cmd" id="cmdForm">
+      <input id="cmd" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Lua, e.g. output[1].volts = 2">
+      <button class="btn" type="submit">Send</button>
+    </form>
+  </details>
+</main>
+
+<script>
+(() => {
+  const VMIN = -5, VMAX = 10, NOTES = ['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
+  const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+  const f3 = x => (Math.round(x * 1000) / 1000).toString();
+
+  // ---------- state ----------
+  const defaults = n => ({ n, v: 0, slew: 0, mode: 'volts', rate: 1, level: 5, snap: false });
+  let OUT = [1,2,3,4].map(defaults);
+  try {
+    const saved = JSON.parse(localStorage.getItem('crow-outs') || 'null');
+    if (Array.isArray(saved) && saved.length === 4) OUT = saved.map((s, i) => Object.assign(defaults(i + 1), s, { n: i + 1 }));
+  } catch (e) {}
+  OUT.forEach(o => { o.dirtyV = o.dirtySlew = o.dirtyMode = true; });
+  let sel = 0, link = null, queue = Promise.resolve();
+  const save = () => { try { localStorage.setItem('crow-outs', JSON.stringify(OUT.map(({n,v,slew,mode,rate,level,snap}) => ({n,v,slew,mode,rate,level,snap})))); } catch (e) {} };
+
+  // mappings for range inputs
+  const rateFromPos = p => 0.05 * Math.pow(400, p / 1000);      // 0.05 .. 20 Hz
+  const posFromRate = r => Math.round(1000 * Math.log(r / 0.05) / Math.log(400));
+  const slewFromPos = p => Math.pow(p / 1000, 2) * 4;            // 0 .. 4 s
+  const posFromSlew = s => Math.round(1000 * Math.sqrt(s / 4));
+
+  const noteName = v => { const st = Math.round(v * 12); return NOTES[((st % 12) + 12) % 12] + (Math.floor(st / 12) + 3); };
+  const fmtV = v => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(2);
+
+  // ---------- build the four columns ----------
+  const outsEl = document.getElementById('outs');
+  const cols = OUT.map((o, i) => {
+    const el = document.createElement('div');
+    el.className = 'out'; el.dataset.n = o.n;
+    el.innerHTML = `
+      <button class="jack" type="button" aria-label="Select output ${o.n}"><span class="ring">${o.n}</span></button>
+      <div class="read"><span class="val"></span><small class="sub"></small></div>
+      <div class="fader" role="slider" tabindex="0" aria-label="Output ${o.n} volts" aria-valuemin="${VMIN}" aria-valuemax="${VMAX}">
+        <div class="fill"></div><div class="zero"></div><div class="cap"></div>
+        <span class="tick" style="top:4%">10</span><span class="tick" style="top:${(10/15)*100}%">0</span><span class="tick" style="top:96%">−5</span>
+      </div>`;
+    outsEl.appendChild(el);
+    const fader = el.querySelector('.fader');
+    el.querySelector('.zero').style.top = ((VMAX - 0) / (VMAX - VMIN) * 100) + '%';
+    el.querySelector('.jack').addEventListener('click', () => select(i));
+
+    const setFromY = y => {
+      const r = fader.getBoundingClientRect();
+      setVolts(i, VMAX - clamp((y - r.top) / r.height, 0, 1) * (VMAX - VMIN));
+    };
+    fader.addEventListener('pointerdown', e => {
+      select(i);
+      if (OUT[i].mode !== 'volts') return;
+      fader.setPointerCapture(e.pointerId); setFromY(e.clientY); e.preventDefault();
+    });
+    fader.addEventListener('pointermove', e => { if (fader.hasPointerCapture(e.pointerId)) setFromY(e.clientY); });
+    fader.addEventListener('keydown', e => {
+      if (OUT[i].mode !== 'volts') return;
+      const step = OUT[i].snap ? 1/12 : (e.shiftKey ? 1 : 0.05);
+      if (e.key === 'ArrowUp' || e.key === 'ArrowRight') { setVolts(i, OUT[i].v + step); e.preventDefault(); }
+      if (e.key === 'ArrowDown' || e.key === 'ArrowLeft') { setVolts(i, OUT[i].v - step); e.preventDefault(); }
+    });
+    return { el, fader, val: el.querySelector('.val'), sub: el.querySelector('.sub'), fill: el.querySelector('.fill'), cap: el.querySelector('.cap') };
+  });
+
+  const yPct = v => (VMAX - v) / (VMAX - VMIN) * 100;
+  function drawFader(i, v) {
+    const c = cols[i], zero = yPct(0), y = yPct(v);
+    c.cap.style.top = y + '%';
+    c.fill.style.top = Math.min(y, zero) + '%';
+    c.fill.style.height = Math.abs(y - zero) + '%';
+  }
+  function renderCol(i) {
+    const o = OUT[i], c = cols[i];
+    c.el.classList.toggle('lfo', o.mode === 'lfo');
+    c.el.classList.toggle('sel', i === sel);
+    if (o.mode === 'volts') {
+      c.val.textContent = fmtV(o.v);
+      c.sub.textContent = o.snap ? noteName(o.v) : 'V';
+      c.fader.setAttribute('aria-valuenow', o.v.toFixed(2));
+      drawFader(i, o.v);
+    } else {
+      c.val.textContent = 'LFO';
+      c.sub.textContent = (o.rate < 1 ? o.rate.toFixed(2) : o.rate.toFixed(1)) + ' Hz';
+    }
+  }
+
+  // LFO preview animation (local only — shows roughly what crow is doing)
+  const t0 = performance.now();
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function anim(now) {
+    OUT.forEach((o, i) => {
+      if (o.mode !== 'lfo') return;
+      const v = reduced ? o.level : o.level * Math.sin(2 * Math.PI * o.rate * (now - t0) / 1000);
+      drawFader(i, clamp(v, VMIN, VMAX));
+    });
+    requestAnimationFrame(anim);
+  }
+  requestAnimationFrame(anim);
+
+  // ---------- detail panel ----------
+  const $ = id => document.getElementById(id);
+  const detail = $('detail'), segBtns = detail.querySelectorAll('.seg button');
+  function renderDetail() {
+    const o = OUT[sel];
+    detail.style.setProperty('--c', `var(--o${o.n})`);
+    $('dTitle').textContent = 'Output ' + o.n;
+    $('dSub').textContent = o.mode === 'volts' ? 'voltage' : 'LFO';
+    segBtns.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === o.mode)));
+    $('voltsPane').hidden = o.mode !== 'volts';
+    $('lfoPane').hidden = o.mode !== 'lfo';
+    if (document.activeElement !== $('vin')) $('vin').value = o.v.toFixed(2);
+    $('snap').checked = o.snap;
+    $('rate').value = posFromRate(o.rate); $('rateOut').textContent = (o.rate < 1 ? o.rate.toFixed(2) : o.rate.toFixed(1)) + ' Hz';
+    $('level').value = Math.round(o.level * 100); $('levelOut').textContent = '±' + o.level.toFixed(1) + ' V';
+    $('slew').value = posFromSlew(o.slew); $('slewOut').textContent = o.slew < 0.01 ? 'off' : o.slew.toFixed(2) + ' s';
+  }
+  function select(i) { sel = i; cols.forEach((_, k) => renderCol(k)); renderDetail(); }
+
+  function setVolts(i, v) {
+    const o = OUT[i];
+    v = clamp(v, VMIN, VMAX);
+    if (o.snap) v = Math.round(v * 12) / 12;
+    if (v === o.v) return;
+    o.v = v; o.dirtyV = true;
+    renderCol(i); if (i === sel) renderDetail(); save();
+  }
+  function setMode(i, m) {
+    const o = OUT[i]; if (o.mode === m) return;
+    o.mode = m; o.dirtyMode = true;
+    renderCol(i); renderDetail(); save();
+  }
+
+  segBtns.forEach(b => b.addEventListener('click', () => setMode(sel, b.dataset.mode)));
+  const stepFor = () => OUT[sel].snap ? 1/12 : 0.01;
+  $('up').addEventListener('click', () => setVolts(sel, OUT[sel].v + stepFor()));
+  $('down').addEventListener('click', () => setVolts(sel, OUT[sel].v - stepFor()));
+  $('zero').addEventListener('click', () => setVolts(sel, 0));
+  $('vin').addEventListener('change', e => { const v = parseFloat(e.target.value); if (!isNaN(v)) setVolts(sel, v); renderDetail(); });
+  $('snap').addEventListener('change', e => { OUT[sel].snap = e.target.checked; setVolts(sel, OUT[sel].v + 0); const o = OUT[sel]; if (o.snap) { o.v = Math.round(o.v * 12) / 12; o.dirtyV = true; } renderCol(sel); renderDetail(); save(); });
+  $('rate').addEventListener('input', e => { const o = OUT[sel]; o.rate = rateFromPos(+e.target.value); o.dirtyMode = true; renderCol(sel); renderDetail(); save(); });
+  $('level').addEventListener('input', e => { const o = OUT[sel]; o.level = +e.target.value / 100; o.dirtyMode = true; renderDetail(); save(); });
+  $('slew').addEventListener('input', e => { const o = OUT[sel]; o.slew = slewFromPos(+e.target.value); o.dirtySlew = true; renderDetail(); save(); });
+  $('allZero').addEventListener('click', () => { OUT.forEach((o, i) => { o.mode = 'volts'; o.v = 0; o.dirtyMode = o.dirtyV = true; renderCol(i); }); renderDetail(); save(); });
+
+  // ---------- console ----------
+  const logEl = $('log'); let rxBuf = '';
+  function log(text, cls) {
+    const line = document.createElement('div'); if (cls) line.className = cls; line.textContent = text;
+    logEl.appendChild(line);
+    while (logEl.childNodes.length > 200) logEl.removeChild(logEl.firstChild);
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+  function onData(s) {
+    rxBuf += s;
+    const parts = rxBuf.split(/\r?\n|\r/); rxBuf = parts.pop();
+    parts.forEach(p => { if (p.trim()) log(p); });
+  }
+  $('cmdForm').addEventListener('submit', e => { e.preventDefault(); const c = $('cmd').value.trim(); if (!c) return; send(c + '\n', true); $('cmd').value = ''; });
+
+  // ---------- status ----------
+  function status(text, kind) {
+    $('statusText').textContent = text;
+    $('status').className = 'status' + (kind ? ' ' + kind : '');
+    $('connect').disabled = !!link; $('disconnect').disabled = !link;
+  }
+  function notice(html) { const n = $('notice'); if (html) { n.innerHTML = html; n.hidden = false; } else n.hidden = true; }
+
+  // ---------- transport: Web Serial ----------
+  async function connectSerial() {
+    const port = await navigator.serial.requestPort({ filters: [{ usbVendorId: 0x0483, usbProductId: 0x5740 }] });
+    await port.open({ baudRate: 115200 });
+    const writer = port.writable.getWriter(), enc = new TextEncoder(), dec = new TextDecoder();
+    let reader = null, alive = true;
+    (async () => {
+      reader = port.readable.getReader();
+      try { while (alive) { const { value, done } = await reader.read(); if (done) break; if (value) onData(dec.decode(value, { stream: true })); } }
+      catch (e) { if (alive) lost(e); }
+      finally { try { reader.releaseLock(); } catch (e) {} }
+    })();
+    return {
+      kind: 'Web Serial', port,
+      write: s => writer.write(enc.encode(s)),
+      close: async () => { alive = false; try { await reader?.cancel(); } catch (e) {} try { writer.releaseLock(); } catch (e) {} try { await port.close(); } catch (e) {} }
+    };
+  }
+
+  // ---------- transport: WebUSB with a tiny CDC-ACM driver ----------
+  async function connectUSB() {
+    const dev = await navigator.usb.requestDevice({ filters: [{ vendorId: 0x0483, productId: 0x5740 }, { vendorId: 0x0483 }] });
+    await dev.open();
+    if (dev.configuration === null) await dev.selectConfiguration(1);
+    const ifs = dev.configuration.interfaces;
+    const dataIf = ifs.find(i => i.alternates.some(a => a.interfaceClass === 0x0A));
+    const ctrlIf = ifs.find(i => i.alternates.some(a => a.interfaceClass === 0x02));
+    if (!dataIf) throw new Error('This device has no USB serial data interface. Is it a crow?');
+    if (ctrlIf) { try { await dev.claimInterface(ctrlIf.interfaceNumber); } catch (e) {} }
+    await dev.claimInterface(dataIf.interfaceNumber);
+    const alt = dataIf.alternates.find(a => a.interfaceClass === 0x0A);
+    const epIn = alt.endpoints.find(e => e.direction === 'in' && e.type === 'bulk');
+    const epOut = alt.endpoints.find(e => e.direction === 'out' && e.type === 'bulk');
+    if (ctrlIf) {
+      const index = ctrlIf.interfaceNumber;
+      // SET_LINE_CODING 115200 8N1, then SET_CONTROL_LINE_STATE (DTR+RTS)
+      try { await dev.controlTransferOut({ requestType: 'class', recipient: 'interface', request: 0x20, value: 0, index }, new Uint8Array([0x00,0xC2,0x01,0x00,0x00,0x00,0x08])); } catch (e) {}
+      try { await dev.controlTransferOut({ requestType: 'class', recipient: 'interface', request: 0x22, value: 0x03, index }); } catch (e) {}
+    }
+    let alive = true; const enc = new TextEncoder(), dec = new TextDecoder();
+    (async () => {
+      while (alive) {
+        try { const r = await dev.transferIn(epIn.endpointNumber, epIn.packetSize || 64); if (r.data && r.data.byteLength) onData(dec.decode(r.data, { stream: true })); }
+        catch (e) { if (alive) lost(e); break; }
+      }
+    })();
+    const size = epOut.packetSize || 64;
+    return {
+      kind: 'WebUSB', dev,
+      write: async s => { const b = enc.encode(s); for (let i = 0; i < b.length; i += size) await dev.transferOut(epOut.endpointNumber, b.slice(i, i + size)); },
+      close: async () => { alive = false; try { await dev.close(); } catch (e) {} }
+    };
+  }
+
+  // ---------- connect / send ----------
+  function send(s, echo) {
+    if (!link) { if (echo) log('Not connected — connect crow first.'); return; }
+    if (echo) log('> ' + s.trim(), 'tx');
+    const l = link;
+    queue = queue.then(() => l.write(s)).catch(e => lost(e));
+  }
+
+  async function connect() {
+    notice('');
+    const hasSerial = 'serial' in navigator, hasUSB = 'usb' in navigator;
+    if (!hasSerial && !hasUSB) {
+      notice('This browser can’t reach USB devices. On Android, open this page in <b>Chrome</b>. Firefox and Samsung Internet don’t support it.');
+      return;
+    }
+    try {
+      status('Choose crow in the dialog…');
+      try { link = hasSerial ? await connectSerial() : await connectUSB(); }
+      catch (e) {
+        // Fall back to WebUSB if Web Serial can't see the USB device on this phone
+        if (hasSerial && hasUSB && e.name !== 'AbortError' && e.name !== 'SecurityError') link = await connectUSB();
+        else if (hasSerial && hasUSB && e.name === 'NotFoundError') link = await connectUSB();
+        else throw e;
+      }
+      status('Connected via ' + link.kind, 'on');
+      log('Connected via ' + link.kind);
+      OUT.forEach(o => { o.dirtyV = o.dirtySlew = o.dirtyMode = true; });
+      send('^^v\n');
+    } catch (e) {
+      link = null;
+      if (e.name === 'NotFoundError' || e.name === 'AbortError') { status('Not connected'); return; }
+      if (e.name === 'SecurityError') {
+        notice('The browser blocked USB access inside this frame. Open the page in its own Chrome tab (⋮ → Open in Chrome), or host the HTML file on any https address.');
+        status('Blocked', 'err'); return;
+      }
+      if (e.name === 'NetworkError' || /claim/i.test(e.message)) {
+        notice('Couldn’t claim crow’s USB interface. Unplug and replug crow, close other apps that might be using it (e.g. a serial terminal), then try again.');
+      }
+      status('Connection failed', 'err'); log('Error: ' + e.message);
+    }
+  }
+
+  async function disconnect() {
+    const l = link; link = null;
+    if (l) await l.close();
+    status('Not connected');
+  }
+  function lost(e) {
+    if (!link) return;
+    log('Connection lost: ' + (e && e.message ? e.message : e));
+    const l = link; link = null; l.close();
+    status('Disconnected — plug crow back in and connect', 'err');
+  }
+
+  $('connect').addEventListener('click', connect);
+  $('disconnect').addEventListener('click', disconnect);
+  if ('usb' in navigator) navigator.usb.addEventListener('disconnect', ev => { if (link && link.dev === ev.device) lost(new Error('USB unplugged')); });
+  if ('serial' in navigator) navigator.serial.addEventListener('disconnect', ev => { if (link && link.port === ev.target) lost(new Error('USB unplugged')); });
+
+  // ---------- flush changes to crow (~30×/s, batched into one Lua line) ----------
+  setInterval(() => {
+    if (!link) return;
+    const cmds = [];
+    OUT.forEach(o => {
+      const out = `output[${o.n}]`;
+      if (o.dirtySlew) { cmds.push(`${out}.slew=${f3(o.slew)}`); o.dirtySlew = false; }
+      if (o.mode === 'volts') {
+        if (o.dirtyMode) { cmds.push(`${out}.action=to(${f3(o.v)},0)`, `${out}()`); o.dirtyMode = false; o.dirtyV = true; }
+        if (o.dirtyV) { cmds.push(`${out}.volts=${f3(o.v)}`); o.dirtyV = false; }
+      } else if (o.dirtyMode) {
+        cmds.push(`${out}.action=lfo(${f3(1 / o.rate)},${f3(o.level)})`, `${out}()`); o.dirtyMode = false;
+      }
+    });
+    if (cmds.length) send(cmds.join(';') + '\n');
+  }, 33);
+
+  // ---------- init ----------
+  if (!('serial' in navigator) && !('usb' in navigator)) {
+    notice('This browser can’t reach USB devices. On Android, open this page in <b>Chrome</b> and plug crow in with a USB-OTG adapter or a USB-C to micro-USB cable.');
+  }
+  select(0);
+  status('Not connected');
+})();
+</script>
+</body>
+</html>
