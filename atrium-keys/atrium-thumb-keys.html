@@ -98,6 +98,11 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   color:rgba(0,0,0,.33);pointer-events:none
 }
 
+.act{font-size:10.5px;color:var(--dim);min-width:62px;text-align:right;font-variant-numeric:tabular-nums;transition:color .12s}
+.act.hit{color:var(--amber)}
+.diag{white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+ font-size:10.5px;line-height:1.65;color:var(--dim);margin:0}
+
 /* ---- setup sheet ---- */
 .sheet{
   position:fixed;inset:0;z-index:20;background:rgba(8,9,12,.93);
@@ -160,6 +165,7 @@ body{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
   <button class="tb" id="susBtn" aria-pressed="false">Sus</button>
   <button class="tb" id="panicBtn">Panic</button>
   <span class="spacer"></span>
+  <span class="act" id="act">—</span>
   <span class="status"><i class="dot" id="dot"></i><b id="statusText">Internal sound</b></span>
   <button class="tb" id="fullBtn" aria-label="Fullscreen">&#9974;</button>
   <button class="tb" id="setBtn">Setup</button>
@@ -182,6 +188,11 @@ body{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
         <button class="tb" id="rescan">Rescan</button>
       </div>
       <p class="note" id="midiNote"></p>
+      <div class="row2" style="margin-top:9px">
+        <button class="tb" id="testBtn">Test note</button>
+        <button class="tb" id="scanBtn">Sweep channels 1&ndash;16</button>
+      </div>
+      <p class="note" id="scanNote">If you hear nothing, sweep the channels: Atrium answers on only one of them unless it is set to omni.</p>
     </div>
 
     <div class="card">
@@ -251,6 +262,12 @@ body{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
         <span class="val" id="volV"></span>
       </div>
       <p class="note">A plain two-saw voice for practising without the synth plugged in. Turn it off once Atrium is connected.</p>
+    </div>
+
+    <div class="card">
+      <h3>Diagnostics</h3>
+      <p class="diag" id="diagBody">&mdash;</p>
+      <div class="row2" style="margin-top:9px"><button class="tb" id="diagBtn">Refresh</button></div>
     </div>
 
     <div class="card">
@@ -329,7 +346,21 @@ function flushSustain(){ for(var n in sustained){ synthKill(+n); } sustained={};
 
 /* ---------- midi ---------- */
 var access=null,out=null,midiMsg="";
-function send(b){ if(out){ try{out.send(b);}catch(e){} } }
+/* app-side synths that show up as MIDI destinations on Android - never auto-pick one */
+var SOFTWARE=/synprez|fluid|sonivox|soundfont|sf2|through|virtual|android.*synth|midi synth/i;
+function hex(b){ return b.map(function(x){ return ("0"+x.toString(16)).slice(-2); }).join(" "); }
+function send(b){
+  diag.lastMsg=hex(b);
+  if(out){ try{ out.send(b); diag.sent++; }catch(e){ diag.lastMsg+="  (refused: "+((e&&e.name)||"error")+")"; } }
+  else diag.lastMsg+="  (no output selected)";
+}
+var flashT=null;
+function flash(n,ch){
+  var a=$("act"); if(!a)return;
+  a.textContent=noteName(n)+" ch"+ch;
+  a.classList.add("hit");
+  clearTimeout(flashT); flashT=setTimeout(function(){ a.classList.remove("hit"); },200);
+}
 function setStatus(){
   $("dot").className="dot"+(out?" live":"");
   $("statusText").textContent=out?out.name:"Internal sound";
@@ -340,10 +371,12 @@ function fillOutputs(){
   none.value="";none.textContent="Internal sound only";sel.appendChild(none);
   var list=[]; if(access){ access.outputs.forEach(function(o){list.push(o);}); }
   list.forEach(function(o){ var op=document.createElement("option"); op.value=o.id; op.textContent=o.name; sel.appendChild(op); });
-  var pick=null;
-  if(S.outId){ for(var i=0;i<list.length;i++){ if(list[i].id===S.outId) pick=list[i]; } }
-  if(!pick){ for(var j=0;j<list.length;j++){ if(/atrium|whimsical/i.test(list[j].name)) pick=list[j]; } }
-  if(!pick && list.length && S.outId===null) pick=list[0];
+  var pick=null,i;
+  if(S.outId){ for(i=0;i<list.length;i++){ if(list[i].id===S.outId) pick=list[i]; } }
+  if(!pick && S.outId==null){
+    for(i=0;i<list.length;i++){ if(/atrium|whimsical/i.test(list[i].name)) pick=list[i]; }
+    if(!pick){ for(i=0;i<list.length;i++){ if(!SOFTWARE.test(list[i].name)){ pick=list[i]; break; } } }
+  }
   out=pick||null; sel.value=out?out.id:""; setStatus();
 }
 function initMIDI(){
@@ -363,10 +396,11 @@ function initMIDI(){
 
 /* ---------- note engine ---------- */
 var held={},active=new Map(),downIds=new Set(),sus=false;
+var pointerSeen=false,diag={down:0,up:0,sent:0,lastMsg:"\u2014"};
 function noteOn(ch,n,v){
   var k=ch+":"+n,c=held[k]||0;
   if(!c){ send([0x90|(ch-1),n,v]); synthOn(n,v); }
-  held[k]=c+1;
+  held[k]=c+1; flash(n,ch);
 }
 function noteOff(ch,n){
   var k=ch+":"+n,c=held[k]||0;
@@ -466,6 +500,7 @@ function build(){
 /* ---------- pointers ---------- */
 var stage=$("rows");
 stage.addEventListener("pointerdown",function(e){
+  pointerSeen=true; diag.down++;
   e.preventDefault(); ensureAudio();
   try{ if(e.target.hasPointerCapture&&e.target.hasPointerCapture(e.pointerId)) e.target.releasePointerCapture(e.pointerId); }catch(err){}
   downIds.add(e.pointerId);
@@ -476,9 +511,24 @@ stage.addEventListener("pointermove",function(e){
   e.preventDefault();
   press(e.pointerId,keyAt(e.clientX,e.clientY));
 },{passive:false});
-function up(e){ if(downIds.delete(e.pointerId)) release(e.pointerId); }
+function up(e){ diag.up++; if(downIds.delete(e.pointerId)) release(e.pointerId); }
 window.addEventListener("pointerup",up);
 window.addEventListener("pointercancel",up);
+function touchAt(e,phase){
+  if(pointerSeen)return;
+  e.preventDefault();
+  if(phase==="down") ensureAudio();
+  for(var i=0;i<e.changedTouches.length;i++){
+    var t=e.changedTouches[i],id="t"+t.identifier;
+    if(phase==="down"){ diag.down++; downIds.add(id); press(id,keyAt(t.clientX,t.clientY)); }
+    else if(phase==="move"){ if(downIds.has(id)&&S.slide) press(id,keyAt(t.clientX,t.clientY)); }
+    else { diag.up++; if(downIds.delete(id)) release(id); }
+  }
+}
+stage.addEventListener("touchstart",function(e){touchAt(e,"down");},{passive:false});
+stage.addEventListener("touchmove",function(e){touchAt(e,"move");},{passive:false});
+stage.addEventListener("touchend",function(e){touchAt(e,"up");},{passive:false});
+stage.addEventListener("touchcancel",function(e){touchAt(e,"up");},{passive:false});
 window.addEventListener("blur",panic);
 document.addEventListener("visibilitychange",function(){ if(document.hidden) panic(); });
 document.addEventListener("contextmenu",function(e){ e.preventDefault(); });
@@ -516,7 +566,7 @@ $("rowsBtn").onclick=function(){
 };
 $("susBtn").onclick=function(){ setSustain(!sus); };
 $("panicBtn").onclick=panic;
-$("setBtn").onclick=function(){ $("sheet").hidden=false; };
+$("setBtn").onclick=function(){ $("sheet").hidden=false; refreshDiag(); };
 $("closeBtn").onclick=function(){ $("sheet").hidden=true; save(); };
 $("fullBtn").onclick=function(){
   var el=document.documentElement;
@@ -533,7 +583,36 @@ $("outSel").onchange=function(){
   if(id&&access){ access.outputs.forEach(function(o){ if(o.id===id) out=o; }); }
   save(); setStatus();
 };
-$("rescan").onclick=function(){ if(access) fillOutputs(); else initMIDI(); };
+$("rescan").onclick=function(){ if(access) fillOutputs(); else initMIDI(); refreshDiag(); };
+$("testBtn").onclick=function(){
+  ensureAudio(); noteOn(S.ch1,S.base,S.vel);
+  setTimeout(function(){ noteOff(S.ch1,S.base); refreshDiag(); },350);
+};
+var sweeping=false;
+$("scanBtn").onclick=function(){
+  if(sweeping)return; sweeping=true; ensureAudio();
+  var c=1;
+  (function step(){
+    if(c>16){ sweeping=false; $("scanNote").textContent="Sweep finished. Set the channel above to whichever one you heard."; refreshDiag(); return; }
+    $("scanNote").textContent="Playing "+noteName(S.base)+" on channel "+c+"\u2026";
+    var cc=c; send([0x90|(cc-1),S.base,S.vel]);
+    setTimeout(function(){ send([0x80|(cc-1),S.base,0]); c++; step(); },420);
+  })();
+};
+function refreshDiag(){
+  var body=$("diagBody"); if(!body)return;
+  var names=[]; if(access) access.outputs.forEach(function(o){ names.push(o.name); });
+  var r=$("rows").getBoundingClientRect();
+  body.textContent=
+    "touch      "+diag.down+" down / "+diag.up+" up ("+(pointerSeen?"pointer events":"touch fallback")+")\n"+
+    "keyboard   "+document.querySelectorAll(".key").length+" keys, "+Math.round(r.width)+"\u00d7"+Math.round(r.height)+" px\n"+
+    "page       "+(window.isSecureContext?"secure":"NOT secure - Web MIDI needs https")+"\n"+
+    "web midi   "+(navigator.requestMIDIAccess?(access?"granted":"not granted yet"):"not in this browser")+"\n"+
+    "outputs    "+(names.length?names.join("\n           "):"none found")+"\n"+
+    "sending to "+(out?out.name:"nothing")+", channel "+S.ch1+(S.twoRows?"/"+S.ch2:"")+"\n"+
+    "messages   "+diag.sent+" sent, last "+diag.lastMsg;
+}
+$("diagBtn").onclick=refreshDiag;
 
 var sizeR=$("sizeR"); sizeR.value=S.keyMM;
 sizeR.oninput=function(){ S.keyMM=+this.value; $("sizeV").textContent=S.keyMM.toFixed(1)+" mm"; build(); };
